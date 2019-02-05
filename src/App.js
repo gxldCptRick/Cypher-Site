@@ -1,7 +1,30 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import { Cypher } from "./components/Cypher";
+import { CypherDisplay, CypherPage } from "./components/Cypher";
+import { BrowserRouter, Route, Link } from "react-router-dom";
+
+function CypherPageCreator(cypher, callback) {
+  return () => <CypherPage data={cypher} {...callback} />;
+}
+
+function MainPage(datto) {
+  return () => (
+    <div>
+      <header>
+        <h1>Avaliable Cyphers</h1>
+      </header>
+      <ul className="cyphers-list">
+        {datto.map(e => (
+          <li key={e.name}>
+            <Link className="cypher-link" to={"/" + e.name}>
+              <CypherDisplay data={e} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 class App extends Component {
   constructor(props) {
@@ -27,45 +50,42 @@ class App extends Component {
     this.isVisible = false;
   }
 
-  renderCyphers() {
-    let cyphersDisplay = null;
+  renderRoutingTable() {
+    let routerDisplay = null;
     if (this.state.data.length > 0) {
-      cyphersDisplay = this.state.data.map(e => (
-        <Cypher key={e.name} data={e} />
-      ));
+      routerDisplay = (
+        <BrowserRouter>
+          <div>
+            <nav className="cypher-nav">
+              <Link to="/">
+                <h2>Home</h2>
+              </Link>
+            </nav>
+            {this.state.data.map(e => (
+              <Route
+                exact
+                path={"/" + e.name}
+                key={e.name}
+                component={CypherPageCreator(e, {
+                  onDecrypt: (message, key) =>
+                    this.service.decryptMessage(message, e.url, key),
+                  onEncrypt: (message, key) =>
+                    this.service.encryptMessage(message, e.url, key)
+                })}
+              />
+            ))}
+            <Route exact path={"/"} component={MainPage(this.state.data)} />
+          </div>
+        </BrowserRouter>
+      );
+    } else {
+      routerDisplay = <h2>Loading....</h2>;
     }
-    return cyphersDisplay;
-  }
-
-  renderError() {
-    let errorDisplay = null;
-    if (this.state.error) {
-      errorDisplay = <p>{this.state.error.toString()}</p>;
-    }
-    return errorDisplay;
+    return routerDisplay;
   }
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-        {this.renderError()}
-        <ul>{this.renderCyphers()}</ul>
-      </div>
-    );
+    return <div className="App"> {this.renderRoutingTable()}</div>;
   }
 }
 
