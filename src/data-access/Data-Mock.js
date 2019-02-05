@@ -36,10 +36,12 @@ export class DataAccess {
     return cyphers;
   }
   async encryptMessage(message, url, key = null) {
+    await this.expensiveOp();
     return '"I Got You" - jon';
   }
 
   async decryptMessage(message, url, key = null) {
+    await this.expensiveOp();
     return '"This is gonna work" - Andres';
   }
 }

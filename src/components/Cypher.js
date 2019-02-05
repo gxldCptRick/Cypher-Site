@@ -1,4 +1,6 @@
 import React from "react";
+import "./Cypher.css";
+
 function capitalizeString(string) {
   return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
 }
@@ -13,14 +15,16 @@ export function CypherDisplay(props) {
     </div>
   );
 }
-
+const defaultEncryptMessage = "type here to encrypt";
+const defaultDecryptMessage = "type here to decrypt";
 export class CypherPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       encryptMessage: "",
       decryptMessage: "",
-      key: ""
+      key: "",
+      isLoading: false
     };
     this.cypher = props.data;
   }
@@ -30,11 +34,15 @@ export class CypherPage extends React.Component {
   };
 
   decryptChanged = e => {
-    this.setState({ decryptMessage: e.target.value });
+    this.setState({
+      decryptMessage: e.target.value
+    });
   };
 
   encryptChanged = e => {
-    this.setState({ encryptMessage: e.target.value });
+    this.setState({
+      encryptMessage: e.target.value
+    });
   };
 
   renderKey() {
@@ -55,13 +63,14 @@ export class CypherPage extends React.Component {
   generateCallback(propFunction, message, destination) {
     return async () => {
       try {
+        this.setState({ isLoading: true });
         let altered_message = await this.props[propFunction](
           this.state[message],
           this.state.key
         );
         let obj = {};
         obj[destination] = altered_message;
-        this.setState(obj);
+        this.setState(Object.assign(obj, { isLoading: false }));
       } catch (e) {
         alert(e);
       }
@@ -76,39 +85,45 @@ export class CypherPage extends React.Component {
         <h2>{cypher.name}</h2>
         <p>{cypher.description}</p>
         <p>{cypher.example}</p>
-        <div>
-          <div>
+        <div className="flex">
+          <div className="text-input">
             <h2>Decrypt Box</h2>
             <textarea
+              placeholder={defaultDecryptMessage}
+              disabled={this.state.isLoading}
               onChange={this.decryptChanged}
               value={this.state.decryptMessage}
             />
+            <button
+              disabled={this.state.isLoading}
+              onClick={this.generateCallback(
+                "onDecrypt",
+                "decryptMessage",
+                "encryptMessage"
+              )}
+            >
+              Decrypt
+            </button>
           </div>
-          <div>
+          <div className="text-input">
             <h2>Encrypt Box</h2>
             <textarea
+              placeholder={defaultEncryptMessage}
+              disabled={this.state.isLoading}
               onChange={this.encryptChanged}
               value={this.state.encryptMessage}
             />
+            <button
+              disabled={this.state.isLoading}
+              onClick={this.generateCallback(
+                "onEncrypt",
+                "encryptMessage",
+                "decryptMessage"
+              )}
+            >
+              Encrypt
+            </button>
           </div>
-          <button
-            onClick={this.generateCallback(
-              "onDecrypt",
-              "decryptMessage",
-              "encryptMessage"
-            )}
-          >
-            Decrypt
-          </button>
-          <button
-            onClick={this.generateCallback(
-              "onEncrypt",
-              "encryptMessage",
-              "decryptMessage"
-            )}
-          >
-            Encrypt
-          </button>
         </div>
       </div>
     );

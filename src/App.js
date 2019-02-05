@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import "./App.css";
 import { CypherDisplay, CypherPage } from "./components/Cypher";
-import { BrowserRouter, Route, Link } from "react-router-dom";
-
+import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
+function NotFound() {
+  return <p>HI LOOKS LIKE YOU DIDN't FIND WHAT YOU WERE LOOKING FOR</p>;
+}
 function CypherPageCreator(cypher, callback) {
   return () => <CypherPage data={cypher} {...callback} />;
 }
@@ -61,20 +63,23 @@ class App extends Component {
                 <h2>Home</h2>
               </Link>
             </nav>
-            {this.state.data.map(e => (
-              <Route
-                exact
-                path={"/" + e.name}
-                key={e.name}
-                component={CypherPageCreator(e, {
-                  onDecrypt: (message, key) =>
-                    this.service.decryptMessage(message, e.url, key),
-                  onEncrypt: (message, key) =>
-                    this.service.encryptMessage(message, e.url, key)
-                })}
-              />
-            ))}
-            <Route exact path={"/"} component={MainPage(this.state.data)} />
+            <Switch>
+              {this.state.data.map(e => (
+                <Route
+                  exact
+                  path={"/" + e.name}
+                  key={e.name}
+                  component={CypherPageCreator(e, {
+                    onDecrypt: (message, key) =>
+                      this.service.decryptMessage(message, e.url, key),
+                    onEncrypt: (message, key) =>
+                      this.service.encryptMessage(message, e.url, key)
+                  })}
+                />
+              ))}
+              <Route exact path={"/"} component={MainPage(this.state.data)} />
+              <Route component={NotFound} />
+            </Switch>
           </div>
         </BrowserRouter>
       );

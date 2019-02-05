@@ -1,0 +1,13 @@
+.text-input {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.text-input textarea {
+  resize: none;
+}
+
+.flex {
+  display: flex;
+}
