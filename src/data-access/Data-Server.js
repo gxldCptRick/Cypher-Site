@@ -21,26 +21,37 @@ export class DataAccess {
     }
     return this.cyphers;
   }
+
+  async requestDecryptAndEncryptUrl(url) {
+    let cypherObj = await this.makeGetRequest(url);
+    let decryptObj = await this.makeGetRequest(cypherObj.decryptUrl);
+    let encryptObj = await this.makeGetRequest(cypherObj.encryptUrl);
+    this.encryptInfo[url] = encryptObj;
+    this.decryptInfo[url] = decryptObj;
+  }
+
   async encryptMessage(message, url, key = null) {
     if (!this.cypherEncrypt[url]) {
-      let cypherObj = await this.makeGetRequest(url);
-      this.cypherEncrypt[url] = cypherObj.encryptUrl;
-      this.cypherDecrypt[url] = cypherObj.decryptUl;
+      await this.requestDecryptAndEncryptUrl(url);
     }
-    let encryptUrl = this.encryptMessage[url];
-    encryptUrl = encryptUrl.replace("<message>", message).replace("<key>", key);
+    let encryptObj = this.encryptInfo[url];
+    let encryptUrl = encryptObj.encryptUrl;
+    encryptUrl = encryptUrl
+      .replace(encryptObj.messageTemplate, message)
+      .replace(encryptObj.keyTemplate, key);
     let response = await this.makeGetRequest(encryptUrl);
     return response.message;
   }
 
   async decryptMessage(message, url, key = null) {
     if (!this.cypherDecrypt[url]) {
-      let cypherObj = await this.makeGetRequest(url);
-      this.cypherEncrypt[url] = cypherObj.encryptUrl;
-      this.cypherDecrypt[url] = cypherObj.decryptUrl;
+      await this.requestDecryptAndEncryptUrl(url);
     }
-    let decryptUrl = this.cypherDecrypt[url];
-    decryptUrl = decryptUrl.replace("<message>", message).replace("<key>", key);
+    let decryptObj = this.decryptInfo[url];
+    let decryptUrl = decryptObj.encryptUrl;
+    decryptUrl = decryptUrl
+      .replace(decryptObj.messageTemplate, message)
+      .replace(decryptObj.keyTemplate, key);
     let response = await this.makeGetRequest(decryptUrl);
     return response.message;
   }
