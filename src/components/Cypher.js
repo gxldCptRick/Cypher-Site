@@ -15,14 +15,38 @@ export function CypherDisplay(props) {
     </div>
   );
 }
-const defaultEncryptMessage = "type here to encrypt";
-const defaultDecryptMessage = "type here to decrypt";
+const defaultEncryptMessage = "type the message you would like to hide.";
+const defaultDecryptMessage =
+  "type in junk to see the message that might be hidden inside.";
+
+function InputArea(props) {
+  return (
+    <div className="text-input">
+      <h2>{props.title}</h2>
+      <textarea
+        placeholder={props.defaultText}
+        disabled={props.isLoading}
+        onChange={props.onChange}
+        value={props.value}
+      />
+      <button disabled={props.isLoading} onClick={props.onClick}>
+        {props.buttonText}
+      </button>
+      <h2>Output</h2>
+      <p>{props.outputText}</p>
+    </div>
+  );
+}
+
 export class CypherPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       encryptMessage: "",
       decryptMessage: "",
+      decryptOutput: "",
+      encryptOutput: "",
+      displayMode: "decrypt",
       key: "",
       isLoading: false
     };
@@ -60,6 +84,9 @@ export class CypherPage extends React.Component {
       );
     }
   }
+  selectionChanged = e => {
+    this.setState({ displayMode: e.target.value });
+  };
   generateCallback(propFunction, message, destination) {
     return async () => {
       try {
@@ -76,7 +103,38 @@ export class CypherPage extends React.Component {
       }
     };
   }
-
+  renderEncryptOrDecrypt() {
+    let configuration = {
+      defaultText: defaultDecryptMessage,
+      title: "Decryption",
+      isLoading: this.state.isLoading,
+      onChange: this.decryptChanged,
+      value: this.state.decryptMessage,
+      buttonText: "Decrypt Text",
+      onClick: this.generateCallback(
+        "onDecrypt",
+        "decryptMessage",
+        "decryptOutput"
+      ),
+      outputText: this.state.decryptOutput
+    };
+    if (this.state.displayMode === "encrypt") {
+      configuration = Object.assign(configuration, {
+        title: "Encryption",
+        defaultText: defaultEncryptMessage,
+        onChange: this.encryptChanged,
+        value: this.state.encryptMessage,
+        buttonText: "Encrypt Text",
+        onClick: this.generateCallback(
+          "onEncrypt",
+          "encryptMessage",
+          "encryptOutput"
+        ),
+        outputText: this.state.encryptOutput
+      });
+    }
+    return <InputArea {...configuration} />;
+  }
   render() {
     const cypher = this.props.data;
     return (
@@ -85,46 +143,22 @@ export class CypherPage extends React.Component {
         <h2>{cypher.name}</h2>
         <p>{cypher.description}</p>
         <p>{cypher.example}</p>
-        <div className="flex">
-          <div className="text-input">
-            <h2>Decrypt Box</h2>
-            <textarea
-              placeholder={defaultDecryptMessage}
-              disabled={this.state.isLoading}
-              onChange={this.decryptChanged}
-              value={this.state.decryptMessage}
-            />
-            <button
-              disabled={this.state.isLoading}
-              onClick={this.generateCallback(
-                "onDecrypt",
-                "decryptMessage",
-                "encryptMessage"
-              )}
-            >
-              Decrypt
-            </button>
-          </div>
-          <div className="text-input">
-            <h2>Encrypt Box</h2>
-            <textarea
-              placeholder={defaultEncryptMessage}
-              disabled={this.state.isLoading}
-              onChange={this.encryptChanged}
-              value={this.state.encryptMessage}
-            />
-            <button
-              disabled={this.state.isLoading}
-              onClick={this.generateCallback(
-                "onEncrypt",
-                "encryptMessage",
-                "decryptMessage"
-              )}
-            >
-              Encrypt
-            </button>
-          </div>
-        </div>
+        <h3>Select Current Mode</h3>
+        <select value={this.state.displayMode} onChange={this.selectionChanged}>
+          <option
+            value="encrypt"
+            selected={this.state.displayMode === "encrypt"}
+          >
+            Encrypt
+          </option>
+          <option
+            value="decrypt"
+            selected={this.state.displayMode === "decrypt"}
+          >
+            Decrypt
+          </option>
+        </select>
+        <div className="flex stuff">{this.renderEncryptOrDecrypt()}</div>
       </div>
     );
   }
