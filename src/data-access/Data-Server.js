@@ -12,12 +12,12 @@ export class DataAccess {
     let response = await fetch(url);
     let bodyJSON = await response.json();
     let responseData = JSON.parse(bodyJSON);
-    return responseData;
+    if (!responseData.succesful) throw new Error("Request was not successful");
+    return responseData.data;
   }
   async getCyphers() {
     if (!this.cyphers) {
-      let cypherRequest = await this.makeGetRequest(baseURL);
-      this.cyphers = cypherRequest.data;
+      this.cyphers = await this.makeGetRequest(baseURL);
     }
     return this.cyphers;
   }
@@ -27,9 +27,9 @@ export class DataAccess {
       this.cypherEncrypt[url] = cypherObj.encryptUrl;
       this.cypherDecrypt[url] = cypherObj.decryptUl;
     }
-    let response = await this.makeGetRequest(
-      `${this.cypherEncrypt[url]}/${message}/${key}`
-    );
+    let encryptUrl = this.encryptMessage[url];
+    encryptUrl = encryptUrl.replace("<message>", message).replace("<key>", key);
+    let response = await this.makeGetRequest(encryptUrl);
     return response.message;
   }
 
@@ -39,9 +39,9 @@ export class DataAccess {
       this.cypherEncrypt[url] = cypherObj.encryptUrl;
       this.cypherDecrypt[url] = cypherObj.decryptUrl;
     }
-    let response = await this.makeGetRequest(
-      `${this.cypherDecrypt[url]}/${message}/${key}`
-    );
+    let decryptUrl = this.cypherDecrypt[url];
+    decryptUrl = decryptUrl.replace("<message>", message).replace("<key>", key);
+    let response = await this.makeGetRequest(decryptUrl);
     return response.message;
   }
 }
