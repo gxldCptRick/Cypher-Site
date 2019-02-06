@@ -7,7 +7,7 @@
 
 .text-input textarea {
   resize: none;
-  height: 150px;
+  height: 100px;
   font-size: 1.05em;
   margin: 10px 0 40px 0;
 }
