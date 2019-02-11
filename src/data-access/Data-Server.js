@@ -1,4 +1,3 @@
-/// TODO: Do Actual data access code.
 const HOST_NAME = "localhost";
 const PORT = 5000;
 const baseURL = `http://${HOST_NAME}:${PORT}`;
