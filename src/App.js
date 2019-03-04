@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { CypherDisplay, CypherPage } from "./components/Cypher";
+import MainPager from "./components/MainPage"
 import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
 function NotFound() {
   return <p>HI LOOKS LIKE YOU DIDN't FIND WHAT YOU WERE LOOKING FOR</p>;
@@ -9,30 +10,15 @@ function CypherPageCreator(cypher, callback) {
   return () => <CypherPage data={cypher} {...callback} />;
 }
 
-function MainPage(datto) {
-  return () => (
-    <div>
-      <header>
-        <h1>Avaliable Cyphers</h1>
-      </header>
-      <ul className="cyphers-list">
-        {datto.map(e => (
-          <li key={e.name}>
-            <Link className="cypher-link" to={"/" + e.name}>
-              <CypherDisplay data={e} />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+function MainPage(datto, filter) {
+  return () => (<MainPager datto={datto}>);
 }
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.service = props.service;
-    this.state = { data: [] };
+    this.state = { data: [], filter: () => true };
   }
   async componentDidMount() {
     this.isVisible = true;
