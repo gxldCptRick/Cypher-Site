@@ -1,7 +1,7 @@
 import React from "react";
-import Link from "react-router-dom";
-import CypherDisplay from "./Cypher";
-import FilterWidget from "./Filter";
+import { Link } from "react-router-dom";
+import { CypherDisplay } from "./Cypher";
+import { FilterWidget } from "./Filter";
 export default class MainPage extends React.Component {
   constructor(props) {
     super(props);

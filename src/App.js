@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
-import { CypherDisplay, CypherPage } from "./components/Cypher";
-import MainPager from "./components/MainPage"
+import { CypherPage } from "./components/Cypher";
+import MainPager from "./components/MainPage";
 import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
 function NotFound() {
   return <p>HI LOOKS LIKE YOU DIDN't FIND WHAT YOU WERE LOOKING FOR</p>;
@@ -11,15 +11,16 @@ function CypherPageCreator(cypher, callback) {
 }
 
 function MainPage(datto, filter) {
-  return () => (<MainPager datto={datto}>);
+  return () => <MainPager datto={datto} />;
 }
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.service = props.service;
-    this.state = { data: [], filter: () => true };
+    this.state = { data: [] };
   }
+
   async componentDidMount() {
     this.isVisible = true;
     try {
