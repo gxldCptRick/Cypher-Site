@@ -1,4 +1,5 @@
 import React from "react";
+import "./Filter.css";
 const keyTypes = ["number", "text", "none"];
 export class FilterWidget extends React.Component {
   constructor(props) {
@@ -36,9 +37,9 @@ export class FilterWidget extends React.Component {
     return (
       <div>
         <h2>Key Types</h2>
-        <form>
+        <form className="flex filter">
           {keyTypes.map((e, i) => (
-            <div key={i}>
+            <div className="types" key={i}>
               <input
                 type="checkbox"
                 onChange={this.onChecked(e)}
