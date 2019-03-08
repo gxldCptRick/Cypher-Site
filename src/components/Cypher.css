@@ -15,3 +15,7 @@
 .flex {
   display: flex;
 }
+
+.exam, .desc {
+ white-space:pre;
+}
