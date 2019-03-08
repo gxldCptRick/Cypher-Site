@@ -93,10 +93,11 @@ export class CypherPage extends React.Component {
         this.setState({ isLoading: true });
         let altered_message = await this.props[propFunction](
           this.state[message],
-          this.state.key
+          this.state.key || "none"
         );
         let obj = {};
-        obj[destination] = altered_message;
+        obj[destination] = altered_message.message;
+        console.log(obj);
         this.setState(Object.assign(obj, { isLoading: false }));
       } catch (e) {
         alert(e);
@@ -145,18 +146,8 @@ export class CypherPage extends React.Component {
         <p>{cypher.example}</p>
         <h3>Select Current Mode</h3>
         <select value={this.state.displayMode} onChange={this.selectionChanged}>
-          <option
-            value="encrypt"
-            selected={this.state.displayMode === "encrypt"}
-          >
-            Encrypt
-          </option>
-          <option
-            value="decrypt"
-            selected={this.state.displayMode === "decrypt"}
-          >
-            Decrypt
-          </option>
+          <option value="encrypt">Encrypt</option>
+          <option value="decrypt">Decrypt</option>
         </select>
         <div className="flex stuff">{this.renderEncryptOrDecrypt()}</div>
       </div>

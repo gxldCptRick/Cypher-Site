@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { DataAccess } from "./data-access/Data-Mock";
+import { DataAccess } from "./data-access/Data-Server";
 
 const data_service = new DataAccess();
 ReactDOM.render(
