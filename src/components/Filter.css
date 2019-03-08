@@ -3,6 +3,9 @@
   width: 50%;
 }
 .types {
-  width: 50%;
-  font-size: 1.4em;
+    width: 50%;
+    font-size: 1.4em;
+    background-color: #5e3299;
+    border-radius: 10px;
+    text-align: center; 
 }
