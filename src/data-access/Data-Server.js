@@ -1,4 +1,4 @@
-const HOST_NAME = "localhost";
+const HOST_NAME = "69.27.22.217";
 const PORT = 5000;
 const baseURL = `http://${HOST_NAME}:${PORT}`;
 
