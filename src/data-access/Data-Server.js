@@ -24,10 +24,10 @@ export class DataAccess {
       var responseObject = await response.json();
     } catch (e) {
       console.log(e);
-      console.log(JSON.stringify(e));
       throw e;
     }
-    if (!responseObject.successful) throw responseObject;
+    console.log(responseObject);
+    if (!responseObject.successful) throw responseObject.data;
     return responseObject.data;
   }
 
@@ -44,7 +44,7 @@ export class DataAccess {
       body: JSON.stringify(data)
     });
     let responseObject = await response.json();
-    if (!responseObject.successful) throw responseObject;
+    if (!responseObject.successful) throw responseObject.data;
     return responseObject.data;
   }
   async getCyphers() {
