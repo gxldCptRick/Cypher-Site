@@ -21,13 +21,14 @@ export class DataAccess {
       cache: "no-cache"
     });
     try {
-      var responseData = await response.json();
+      var responseObject = await response.json();
     } catch (e) {
       console.log(e);
+      console.log(JSON.stringify(e));
       throw e;
     }
-    if (!responseData.successful) throw new Error("Request was not successful");
-    return responseData.data;
+    if (!responseObject.successful) throw responseObject;
+    return responseObject.data;
   }
 
   async makePostRequest(url, data) {
@@ -42,9 +43,9 @@ export class DataAccess {
       referrer: "no-referrer",
       body: JSON.stringify(data)
     });
-    let obj = await response.json();
-    if (!obj.successful) throw new Error("Request Was not successful");
-    return obj.data;
+    let responseObject = await response.json();
+    if (!responseObject.successful) throw responseObject;
+    return responseObject.data;
   }
   async getCyphers() {
     if (!this.cyphers) {

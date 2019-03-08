@@ -29,7 +29,10 @@ function InputArea(props) {
         onChange={props.onChange}
         value={props.value}
       />
-      <button disabled={props.isLoading} onClick={props.onClick}>
+      <button
+        disabled={props.isLoading || props.disabled}
+        onClick={props.onClick}
+      >
         {props.buttonText}
       </button>
       <h2>Output</h2>
@@ -46,7 +49,7 @@ export class CypherPage extends React.Component {
       decryptMessage: "",
       decryptOutput: "",
       encryptOutput: "",
-      displayMode: "decrypt",
+      displayMode: "encrypt",
       key: "",
       isLoading: false
     };
@@ -100,7 +103,8 @@ export class CypherPage extends React.Component {
         console.log(obj);
         this.setState(Object.assign(obj, { isLoading: false }));
       } catch (e) {
-        alert(e);
+        alert("Ohhh Noooooo Something Went Wrong...\n" + e.message);
+        this.setState({ error: e, isLoading: false });
       }
     };
   }
@@ -112,6 +116,11 @@ export class CypherPage extends React.Component {
       onChange: this.decryptChanged,
       value: this.state.decryptMessage,
       buttonText: "Decrypt Text",
+      disabled:
+        this.state.decryptMessage === null ||
+        this.state.decryptMessage.trim() === "" ||
+        ((this.state.key === null || this.state.key.trim() === "") &&
+          this.cypher.keyType !== "none"),
       onClick: this.generateCallback(
         "onDecrypt",
         "decryptMessage",
@@ -126,6 +135,11 @@ export class CypherPage extends React.Component {
         onChange: this.encryptChanged,
         value: this.state.encryptMessage,
         buttonText: "Encrypt Text",
+        disabled:
+          this.state.encryptMessage === null ||
+          this.state.encryptMessage.trim() === "" ||
+          ((this.state.key === null || this.state.key.trim() === "") &&
+            this.cypher.keyType !== "none"),
         onClick: this.generateCallback(
           "onEncrypt",
           "encryptMessage",
