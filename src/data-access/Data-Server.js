@@ -1,4 +1,4 @@
-const HOST_NAME = "69.27.22.220";
+const HOST_NAME = "localhost";
 const PORT = 5000;
 const baseURL = `http://${HOST_NAME}:${PORT}`;
 
@@ -6,41 +6,41 @@ const baseURL = `http://${HOST_NAME}:${PORT}`;
 //   return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
 // }
 
-let Map = {
-  ' ': '%20',
-  '$': '%24',
-  '&': '%26',
-  '`': '%60',
-  ':': '%3A',
-  '<': '%3C',
-  '>': '%3E',
-  '[': '%5B',
-  ']': '%5D',
-  '{': '%7B',
-  '}': '%7D',
-  '"': '%22',
-  '+': '%2B',
-  '#': '%23',
-  '%': '%25',
-  '@': '%40',
-  '/': '%2F',
-  ';': '%3B',
-  '=': '%3D',
-  '?': '%3F',
-  '\\': '%5C',
-  '^': '%5E',
-  '|': '%7C',
-  '~': '%7E',
-  '': '%27',
-  ',': '%2C'
-
-}
+let map = {
+  " ": "%20",
+  $: "%24",
+  "&": "%26",
+  "`": "%60",
+  ":": "%3A",
+  "<": "%3C",
+  ">": "%3E",
+  "[": "%5B",
+  "]": "%5D",
+  "{": "%7B",
+  "}": "%7D",
+  '"': "%22",
+  "+": "%2B",
+  "#": "%23",
+  "%": "%25",
+  "@": "%40",
+  "/": "%2F",
+  ";": "%3B",
+  "=": "%3D",
+  "?": "%3F",
+  "\\": "%5C",
+  "^": "%5E",
+  "|": "%7C",
+  "~": "%7E",
+  "'": "%27",
+  ",": "%2C"
+};
 
 function EscapeIllegalCharacters(message) {
-  Object.keys(Map).forEach(element => {
-    message.replace(element, Map[element]);
+  var escapedMessage = message;
+  Object.keys(map).forEach(element => {
+    escapedMessage = escapedMessage.split(element).join(map[element]);
   });
-  return message;
+  return escapedMessage;
 }
 
 export class DataAccess {
